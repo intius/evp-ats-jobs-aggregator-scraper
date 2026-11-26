@@ -1,0 +1,114 @@
+{
+  "name": "Multi-ATS Tech Jobs Scraper - Greenhouse, Ashby & Lever to webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "0297e811-490a-43fa-9eea-dc597ac810b0",
+      "name": "Run every morning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Actors",
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorInputMode": "json",
+        "actorId": {
+          "__rl": true,
+          "value": "qnF7kWJGWeoIUxxcN",
+          "mode": "list",
+          "cachedResultName": "evpp/ats-jobs-aggregator",
+          "cachedResultUrl": "https://apify.com/evpp/ats-jobs-aggregator"
+        },
+        "customBody": "{\n  \"query\": \"software engineer\",\n  \"remoteOnly\": true,\n  \"postedWithinDays\": 30,\n  \"includeDescriptions\": false,\n  \"maxItems\": 25\n}",
+        "timeout": 300,
+        "memory": 512,
+        "build": "latest",
+        "authentication": "apifyApi"
+      },
+      "id": "17df1e53-6909-4128-8b4d-f9bd82813cf8",
+      "name": "Run Multi-ATS Tech Jobs Scraper - Greenhouse, Ashby & Lever",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        280,
+        0
+      ],
+      "credentials": {
+        "apifyApi": {
+          "name": "<your credential>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/your-unique-url",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "0724ca8a-951b-4769-bd10-6a3450e77aa7",
+      "name": "Send results to webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Run every morning": {
+      "main": [
+        [
+          {
+            "node": "Run Multi-ATS Tech Jobs Scraper - Greenhouse, Ashby & Lever",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Multi-ATS Tech Jobs Scraper - Greenhouse, Ashby & Lever": {
+      "main": [
+        [
+          {
+            "node": "Send results to webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    "apify",
+    "web-scraping",
+    "ats-jobs-aggregator"
+  ]
+}
